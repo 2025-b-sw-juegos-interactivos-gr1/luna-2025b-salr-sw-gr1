@@ -1,0 +1,341 @@
+{
+  "accessors": [
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 15759,
+      "max": [
+        0.03699489310383797,
+        0.041451454162597656,
+        0.07270331680774689
+      ],
+      "min": [
+        -0.0335707850754261,
+        -0.04345777630805969,
+        -0.05330952629446983
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 189108,
+      "componentType": 5126,
+      "count": 15759,
+      "max": [
+        0.9999814033508301,
+        0.9999232292175293,
+        0.998115599155426
+      ],
+      "min": [
+        -0.9999665021896362,
+        -0.9997435808181763,
+        -0.9993177056312561
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 15759,
+      "max": [
+        0.9999968409538269,
+        0.9999406933784485,
+        0.9974897503852844,
+        1.0
+      ],
+      "min": [
+        -0.9998078346252441,
+        -0.9940125346183777,
+        -0.9999657869338989,
+        -1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 15759,
+      "max": [
+        0.8259839415550232,
+        0.9990000128746033
+      ],
+      "min": [
+        0.0010000000474974513,
+        0.0010000000474974513
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 126072,
+      "componentType": 5126,
+      "count": 15759,
+      "max": [
+        0.8259839415550232,
+        0.9990000128746033
+      ],
+      "min": [
+        0.0010000000474974513,
+        0.0010000000474974513
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 252144,
+      "componentType": 5126,
+      "count": 15759,
+      "max": [
+        0.8259839415550232,
+        0.9990000128746033
+      ],
+      "min": [
+        0.0010000000474974513,
+        0.0010000000474974513
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 90546,
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "M-XR (https://sketchfab.com/m-xr)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/lindt-chocolate-reindeer-035728e0eeac476e8946e50f3e6e5fad",
+      "title": "Lindt Chocolate Reindeer"
+    },
+    "generator": "Sketchfab-16.56.0",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 362184,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 378216,
+      "byteOffset": 362184,
+      "byteStride": 8,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 378216,
+      "byteOffset": 740400,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 252144,
+      "byteOffset": 1118616,
+      "byteStride": 16,
+      "name": "floatBufferViews",
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 1370760,
+      "uri": "scene.bin"
+    }
+  ],
+  "extensionsUsed": [
+    "KHR_materials_specular"
+  ],
+  "images": [
+    {
+      "uri": "textures/deer_MetallicWorkflow_baseColor.png"
+    },
+    {
+      "uri": "textures/deer_MetallicWorkflow_metallicRoughness.png"
+    },
+    {
+      "uri": "textures/deer_MetallicWorkflow_normal.png"
+    },
+    {
+      "uri": "textures/deer_MetallicWorkflow_specularf0.png"
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "extensions": {
+        "KHR_materials_specular": {
+          "specularColorFactor": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "specularFactor": 1.0,
+          "specularTexture": {
+            "index": 3
+          }
+        }
+      },
+      "name": "deer_MetallicWorkflow",
+      "normalTexture": {
+        "index": 2
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicFactor": 0.0,
+        "metallicRoughnessTexture": {
+          "index": 1
+        },
+        "roughnessFactor": 0.7973292667281646
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "deer_deer_MetallicWorkflow_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TANGENT": 2,
+            "TEXCOORD_0": 3,
+            "TEXCOORD_1": 4,
+            "TEXCOORD_2": 5
+          },
+          "indices": 6,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.220446049250313e-16,
+        -1.0,
+        0.0,
+        0.0,
+        1.0,
+        2.220446049250313e-16,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Sketchfab_model"
+    },
+    {
+      "children": [
+        2
+      ],
+      "matrix": [
+        0.009999999776482582,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.009999999776482582,
+        0.0,
+        0.0,
+        -0.009999999776482582,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "4f1db790050c44c7b222c09397144e93.fbx"
+    },
+    {
+      "children": [
+        3
+      ],
+      "name": "RootNode"
+    },
+    {
+      "children": [
+        4
+      ],
+      "matrix": [
+        58.08189741277881,
+        4.839261239675318,
+        -81.25931497043634,
+        0.0,
+        -76.25271197658667,
+        -31.709573397631985,
+        -56.39172697440563,
+        0.0,
+        -28.49592076068663,
+        94.71580195663725,
+        -14.727451708727232,
+        0.0,
+        -1.0688157081604004,
+        3.955645799636841,
+        -0.013115691021084785,
+        1.0
+      ],
+      "name": "deer"
+    },
+    {
+      "mesh": 0,
+      "name": "deer_deer_MetallicWorkflow_0"
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987,
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Sketchfab_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 1
+    },
+    {
+      "sampler": 0,
+      "source": 2
+    },
+    {
+      "sampler": 0,
+      "source": 3
+    }
+  ]
+}

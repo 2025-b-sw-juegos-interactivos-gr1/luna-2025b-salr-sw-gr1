@@ -1,0 +1,11 @@
+Model Information:
+* title:	Cartoon Anthill
+* source:	https://sketchfab.com/3d-models/cartoon-anthill-8bfcc2bb4b634d93baa4e75da00ea2be
+* author:	Kreckler (https://sketchfab.com/Kreck)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Cartoon Anthill" (https://sketchfab.com/3d-models/cartoon-anthill-8bfcc2bb4b634d93baa4e75da00ea2be) by Kreckler (https://sketchfab.com/Kreck) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hormiga Trabajadora: Recoger y Entregar</title>
+    <style>
+        html, body {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+
+        #loadingScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #2d5016 0%, #1a3009 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-family: Arial, sans-serif;
+            z-index: 1000;
+        }
+
+        #loadingScreen.hidden {
+            display: none;
+        }
+
+        .loader {
+            border: 5px solid #3a6b1e;
+            border-top: 5px solid #8bc34a;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #loadingText {
+            font-size: 18px;
+            color: #c8e6c9;
+        }
+
+        #progressBar {
+            width: 300px;
+            height: 20px;
+            background: #1a3009;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+            border: 2px solid #4caf50;
+        }
+
+        #progressFill {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50 0%, #8bc34a 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        /* Panel de controles */
+        #controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.75);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            max-width: 320px;
+            border: 2px solid rgba(76, 175, 80, 0.6);
+            backdrop-filter: blur(5px);
+        }
+
+        #controls h3 {
+            margin: 0 0 10px 0;
+            color: #8bc34a;
+            font-size: 16px;
+            border-bottom: 1px solid rgba(139, 195, 74, 0.3);
+            padding-bottom: 5px;
+        }
+
+        #controls ul {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+
+        #controls li {
+            margin: 5px 0;
+            line-height: 1.4;
+        }
+
+        #controls kbd {
+            background: rgba(76, 175, 80, 0.3);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 12px;
+            border: 1px solid rgba(139, 195, 74, 0.5);
+        }
+
+        /* Panel de puntuación */
+        #scorePanel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 16px;
+            border: 2px solid rgba(255, 193, 7, 0.6);
+            min-width: 180px;
+        }
+
+        #scorePanel h3 {
+            margin: 0 0 10px 0;
+            color: #ffc107;
+            font-size: 18px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 193, 7, 0.3);
+            padding-bottom: 5px;
+        }
+
+        .score-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+        }
+
+        .score-value {
+            color: #8bc34a;
+            font-weight: bold;
+        }
+
+        /* Estado del jugador */
+        #playerStatus {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border: 2px solid rgba(76, 175, 80, 0.6);
+            text-align: center;
+            min-width: 250px;
+        }
+
+        #playerStatus.carrying {
+            border-color: rgba(255, 193, 7, 0.8);
+            background: rgba(40, 30, 0, 0.9);
+        }
+
+        #playerStatus.near-anthill {
+            border-color: rgba(255, 87, 34, 0.8);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 5px rgba(255, 87, 34, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(255, 87, 34, 0.8); }
+        }
+
+        /* Indicador de interacción */
+        #interactionHint {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 193, 7, 0.9);
+            color: #1a1a1a;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            display: none;
+        }
+
+        #interactionHint.visible {
+            display: block;
+            animation: bounce 0.5s infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateX(-50%) translateY(0); }
+            to { transform: translateX(-50%) translateY(-5px); }
+        }
+
+
+
+        .warning {
+            color: #c8e6c9;
+            font-size: 12px;
+            margin-top: 10px;
+            font-style: italic;
+        }
+    </style>
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+</head>
+<body>
+    <div id="loadingScreen">
+        <div class="loader"></div>
+        <div id="loadingText">Cargando assets...</div>
+        <div id="progressBar">
+            <div id="progressFill"></div>
+        </div>
+    </div>
+    
+    <canvas id="renderCanvas"></canvas>
+    
+    <!-- Panel de controles -->
+    <div id="controls">
+        <h3>🐜 CONTROLES</h3>
+        <ul>
+            <li><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> - Mover hormiga</li>
+            <li><kbd>Shift</kbd> - Correr</li>
+            <li><kbd>E</kbd> - Recoger / Soltar alimento</li>
+            <li><kbd>Mouse</kbd> - Rotar cámara</li>
+            <li><kbd>Rueda</kbd> - Zoom</li>
+            <li><kbd>I</kbd> - Mostrar/Ocultar controles</li>
+        </ul>
+        <div class="warning">
+            🎯 Objetivo: Recoge los alimentos y llévalos al hormiguero
+        </div>
+    </div>
+    
+    <!-- Panel de puntuación -->
+    <div id="scorePanel">
+        <h3>🏆 PUNTUACIÓN</h3>
+        <div class="score-item">
+            <span>🍿 Palomitas:</span>
+            <span class="score-value" id="popcornScore">0</span>
+        </div>
+        <div class="score-item">
+            <span>🍫 Chocolates:</span>
+            <span class="score-value" id="chocolateScore">0</span>
+        </div>
+        <div class="score-item" style="border-top: 1px solid rgba(255,193,7,0.3); padding-top: 8px; margin-top: 8px;">
+            <span>⭐ Total:</span>
+            <span class="score-value" id="totalScore">0</span>
+        </div>
+    </div>
+    
+    <!-- Estado del jugador -->
+    <div id="playerStatus">🐜 Hormiga lista para trabajar</div>
+    
+
+    
+    <!-- Indicador de interacción -->
+    <div id="interactionHint">Presiona <kbd>E</kbd> para interactuar</div>
+    
+    <script type="module" src="./src/main.js"></script>
+</body>
+</html>

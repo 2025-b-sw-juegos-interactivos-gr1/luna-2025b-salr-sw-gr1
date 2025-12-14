@@ -1,0 +1,20 @@
+{
+  "name": "babylon-local-assets",
+  "version": "1.0.0",
+  "description": "Proyecto Babylon.js con gestión de assets locales",
+  "main": "index.html",
+  "scripts": {
+    "start": "http-server -p 8080 -c-1 --cors",
+    "dev": "http-server -p 8080 -c-1 --cors -o"
+  },
+  "keywords": [
+    "babylon.js",
+    "3d",
+    "webgl"
+  ],
+  "author": "Said Alejandro Luna Rivera",
+  "license": "ISC",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
