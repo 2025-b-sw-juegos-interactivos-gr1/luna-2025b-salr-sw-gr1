@@ -543,3 +543,17 @@ De acuerdo con la guía técnica, el diseño debe ser minimalista para no interf
 | **Story** | **Sistema de HUD Reactivo** | **Como** jugador, **quiero** ver mi energía solo cuando corro **para** mantener la inmersión.<br><br>**Tech:** Implementar UIManager con Canvas Groups. | 3 |
 | **Story** | **Feedback de Detección** | **Como** jugador, **quiero** un indicador visual sobre los enemigos **para** saber si me han visto.<br><br>**Tech:** Icono 3D (World Space UI) vinculado a la IA. | 5 |
 | **Task** | **Optimización de Draw Calls** | Implementar Static Batching y combinar mallas para mantener los 60 FPS. | 8 |
+
+**7. Fase 6: Arquitectura Técnica, Patrones y Stack Tecnológico**
+En esta fase definimos el esqueleto del software. Si las mecánicas y sistemas son los órganos, esta arquitectura es la columna vertebral que los sostiene.
+
+**7.1. Filosofía de Arquitectura: Composición y SOLID**
+Para Museum Lockdown, evitaremos la herencia profunda (ej. MonoBehaviour -> Entity -> Enemy -> Statue -> RomanStatue). En su lugar, utilizaremos una arquitectura basada en Componentes y ScriptableObjects (Data-Driven Design) para la gestión de datos.
+
+**Principios Clave:**
+
+1. Separación de Responsabilidades: La UI no calcula la salud, solo la muestra. El Inventario no mueve al jugador, solo calcula el peso.
+2. Inyección de Dependencias (Lite): Uso de SerializeField para asignar referencias en el Inspector de Unity, evitando el uso excesivo de GameObject.Find().
+
+7.2. Estructura del Proyecto (Directory Structure)
+Para mantener el orden en un repositorio colaborativo, definimos una estructura estricta dentro de la carpeta /Assets.
