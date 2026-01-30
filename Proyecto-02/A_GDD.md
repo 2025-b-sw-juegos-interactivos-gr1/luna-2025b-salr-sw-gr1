@@ -544,16 +544,205 @@ De acuerdo con la guía técnica, el diseño debe ser minimalista para no interf
 | **Story** | **Feedback de Detección** | **Como** jugador, **quiero** un indicador visual sobre los enemigos **para** saber si me han visto.<br><br>**Tech:** Icono 3D (World Space UI) vinculado a la IA. | 5 |
 | **Task** | **Optimización de Draw Calls** | Implementar Static Batching y combinar mallas para mantener los 60 FPS. | 8 |
 
-**7. Fase 6: Arquitectura Técnica, Patrones y Stack Tecnológico**
+## 7. Fase 6: Arquitectura Técnica, Patrones y Stack Tecnológico
 En esta fase definimos el esqueleto del software. Si las mecánicas y sistemas son los órganos, esta arquitectura es la columna vertebral que los sostiene.
 
-**7.1. Filosofía de Arquitectura: Composición y SOLID**
+## 7.1. Filosofía de Arquitectura: Composición y SOLID
 Para Museum Lockdown, evitaremos la herencia profunda (ej. MonoBehaviour -> Entity -> Enemy -> Statue -> RomanStatue). En su lugar, utilizaremos una arquitectura basada en Componentes y ScriptableObjects (Data-Driven Design) para la gestión de datos.
 
 **Principios Clave:**
 
-1. Separación de Responsabilidades: La UI no calcula la salud, solo la muestra. El Inventario no mueve al jugador, solo calcula el peso.
-2. Inyección de Dependencias (Lite): Uso de SerializeField para asignar referencias en el Inspector de Unity, evitando el uso excesivo de GameObject.Find().
+1. **Separación de Responsabilidades**: La UI no calcula la salud, solo la muestra. El Inventario no mueve al jugador, solo calcula el peso.
+2. **Inyección de Dependencias (Lite):** Uso de SerializeField para asignar referencias en el Inspector de Unity, evitando el uso excesivo de GameObject.Find().
 
-7.2. Estructura del Proyecto (Directory Structure)
+## 7.2. Estructura del Proyecto (Directory Structure)
 Para mantener el orden en un repositorio colaborativo, definimos una estructura estricta dentro de la carpeta /Assets.
+
+| **Directorio** | Contenido / Regla |
+| :--- | :--- |
+| /_Project | Carpeta raíz para diferenciar assets propios de plugins externos.|
+| /_Project/Scripts | "Código fuente dividido en /Core, /Systems, /UI, /Player."|
+| /_Project/Prefabs | "Objetos preconfigurados. Subcarpetas: /Greybox, /Final."|
+| /_Project/ScriptableObjects|"Datos estáticos (Items, Configuración de enemigos)."|
+| /_Project/Art | "Modelos, Texturas y Materiales."|
+| /Plugins | "Assets de terceros (ej. DOTween, ProBuilder)."|
+
+## 7.3. Patrones de Diseño Esenciales
+Implementaremos tres patrones clásicos adaptados al ciclo de vida de Unity:
+
+1. **Singleton (Monostate):** Para el GameManager. Garantiza una única instancia para controlar el flujo global (Menú -> Juego -> Pausa).
+
+2. **Observer (Eventos C#):** Ya definido en la Fase 3. Desacopla sistemas (el Inventario emite eventos, la UI escucha).
+
+3. **State Pattern (Máquina de Estados):**
+    - Global: Para los estados del juego (GameState).
+    - Local: Para la IA de las exhibiciones (Idle -> Investigate -> Chase).
+
+## 7.4. Implementación Técnica: El GameManager (Core)
+El GameManager orquesta el flujo de la aplicación y la carga de escenas.
+
+**Archivo:** GameManager.cs **(Singleton + State Machine)**
+
+```csharp
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public enum GameState {
+    Initialization,
+    MainMenu,
+    Gameplay,
+    Paused,
+    GameOver,
+    Victory
+}
+
+public class GameManager : MonoBehaviour {
+    // Implementación del Singleton Thread-Safe para Unity
+    public static GameManager Instance { get; private set; }
+
+    public GameState CurrentState { get; private set; }
+
+    private void Awake() {
+        if (Instance != null && Instance != this) {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+        DontDestroyOnLoad(gameObject); // Persiste entre escenas
+    }
+
+    private void Start() {
+        ChangeState(GameState.Initialization);
+    }
+
+    public void ChangeState(GameState newState) {
+        CurrentState = newState;
+        Debug.Log($"[GameManager] Cambio de Estado: {newState}");
+
+        switch (newState) {
+            case GameState.MainMenu:
+                SceneManager.LoadScene("MainMenu");
+                Time.timeScale = 1f;
+                break;
+            case GameState.Gameplay:
+                // Si venimos del menú, cargamos nivel. Si es solo un cambio lógico, continuamos.
+                if (SceneManager.GetActiveScene().name == "MainMenu")
+                    SceneManager.LoadScene("Level_01_Museum");
+                Time.timeScale = 1f;
+                break;
+            case GameState.Paused:
+                Time.timeScale = 0f; // Congelar físicas
+                break;
+            case GameState.GameOver:
+                Time.timeScale = 1f; // Permitir animaciones de muerte
+                // Disparar evento de UI de Game Over
+                break;
+        }
+    }
+    
+    // Método público para alternar pausa
+    public void TogglePause() {
+        if (CurrentState == GameState.Gameplay) ChangeState(GameState.Paused);
+        else if (CurrentState == GameState.Paused) ChangeState(GameState.Gameplay);
+    }
+}
+```
+## 7.5. Diagrama UML Simplificado (Clases Core)
+Este diagrama muestra las relaciones de dependencia entre los sistemas principales definidos en el GDD.
+
+
+## 7.6. Definición del Stack Tecnológico
+Herramientas aprobadas para evitar problemas de compatibilidad y versionado.
+
+| Categoría | Herramieta | Versión / Detalle | Razón |
+| :--- | :--- | :--- | :--- |
+| **Motor** | Unity | 2022.3 LTS | Estabilidad a largo plazo (Long Term Support). |
+| **Lenguaje** | C# | .NET Standard 2.1 | Tipado estricto y características modernas de C#. |
+| **IDE** | Visual Studio / Rider | 2022+ | Integración profunda con depurador de Unity. |
+| **Control de Versiones** | Git + GitHub | LFS Activado | Git LFS es obligatorio para archivos binarios (.fbx, .png). |
+| **Modelado 3D** | Blender | 3.6+ | Exportación directa a .fbx compatible con Unity. |
+| **Audio** | Audacity | - | Edición básica de SFX. |
+
+## 7.7. Gestión con Scrum (Backlog Parte 6)
+### EPIC 6: Arquitectura y Setup.
+| Tipo | Tarea | Descripción / Criterios | Estimación (SP) |
+| :--- | :--- | :--- | :--- |
+| **Task** | Configuración del Repositorio | Inicializar Git, configurar .gitignore (excluir /Library, /Temp) y activar Git LFS. | 1 |
+| **Story** | Implementar GameManager | **Como** desarrollador, **quiero** un sistema central de estados **para** manejar la pausa y el reinicio.<br><br>**Tech:** Singleton Pattern. | 5 |
+| **Task** | Setup de Escenas | Crear estructura de escenas: Bootstrapper (Carga managers), MainMenu, Level_01.+ | 2 |
+| **Story** | Sistema de Debugging | **Como** QA, **quiero** ver el estado de la IA y el peso actual en pantalla **para** validar errores.<br><br>**Tech:** Unity UI o Gizmos. | 3 |
+
+## 8. Fase 7: Planificación de Sprints, QA y Cierre del Proyecto
+En esta fase, transformamos el documento de diseño en un plan de ejecución realista, integrando control de calidad y despliegue automatizado.
+
+## 8.1. El GDD como Documento Vivo (Versioning)
+Este documento evolucionará. Se mantendrá un registro de cambios (CHANGELOG.md) en la raíz del repositorio.
+
+**Regla:**  Si una mecánica resulta imposible de programar en el Sprint 3, se actualiza el GDD, no se fuerza el código.
+
+## 8.2. Roadmap del Semestre (Planificación de Sprints)
+Simulación de un ciclo de desarrollo de 12 semanas (6 Sprints de 2 semanas).
+| Sprint | Foco principal | Entregable (Definition of Done) | 
+| :--- | :--- | :--- |
+| **Sprint 1** | Prototipado (Greyboxing) & Core Locomotion | El jugador (cápsula) se mueve, agacha y corre por un nivel de cubos grises. El peso afecta la velocidad. |
+| **Sprint 2** | Sistemas de Interacción & Inventario | Se pueden recoger objetos (engranajes). El sistema de peso funciona. La UI de inventario es funcional. |
+| **Sprint 3** | IA y Anima-FSM (Enemigos) | Las "Estatuas" patrullan. Tienen cono de visión y reaccionan al sonido. Existe condición de "Game Over". |
+| **Sprint 4** | Arte 3D e Iluminación (Atmósfera) | Reemplazo de cubos por modelos .fbx. Bakeo de luces (Lightmaps). El juego ya da "miedo". |
+| **Sprint 5** | Audio & UI Polish (Feedback) | Implementación de música dinámica y sonidos de pasos. UI final con viñetas de daño. |
+| **Sprint 6** | Bug Fixing & Gold Master | Congelación de código (Code Freeze). No se añade nada nuevo. Solo optimización y build final. |
+
+## 8.3. QA y Testing (Control de Calidad)
+Se debe incluir un sistema de reporte de bugs en GitHub Issues.
+
+**Formato de Ticket de Bug:**
+
+**ID: BUG-042 Gravedad:** Alta (Bloqueante) Descripción: El jugador atraviesa la pared del "Taller" si lleva más de 25kg de peso. Pasos para reproducir:
+
+    1. Recoger 3 engranajes grandes.
+    2. Correr hacia la esquina noreste del taller.
+    3. Agacharse rápidamente. **Resultado esperado:** Colisión normal. **Resultado actual:** El jugador cae al vacío (fuera del mapa).
+
+## 8.4. Implementación Técnica: Build y Despliegue (CI/CD)
+Automatizaremos la creación de ejecutables usando GitHub Actions y GameCI. Esto permite que cada Pull Request a la rama main verifique que el proyecto compila correctamente.
+
+**Archivo:** .github/workflows/main.yml (Concepto)
+
+```
+name: Test and Build Unity
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  buildWindows:
+    name: Build for Windows
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+
+      - name: Unity - Builder
+        uses: game-ci/unity-builder@v2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          targetPlatform: StandaloneWindows64
+          buildName: MuseumLockdown_Build
+          
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Build-Windows
+          path: build/StandaloneWindows64
+```
+## 8.5. El Post-Mortem (Cierre)
+Al finalizar el proyecto, el equipo responderá:
+
+1. What went right? (Ej. "El sistema de peso creó la tensión deseada").
+
+2. What went wrong? (Ej. "La IA de las estatuas se atascaba en las puertas pequeñas").
+
+3. Lessons learned: (Ej. "Aprendimos a usar NavMeshAgent correctamente en Unity en lugar de mover transformadas manualmente").
+
