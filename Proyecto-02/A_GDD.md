@@ -650,6 +650,9 @@ public class GameManager : MonoBehaviour {
 ## 7.5. Diagrama UML Simplificado (Clases Core)
 Este diagrama muestra las relaciones de dependencia entre los sistemas principales definidos en el GDD.
 
+<div align="center">
+  <img src="./imagenes/image4.png" alt="Vista Kanban del flujo de trabajo" width="900">
+</div>
 
 ## 7.6. Definición del Stack Tecnológico
 Herramientas aprobadas para evitar problemas de compatibilidad y versionado.
